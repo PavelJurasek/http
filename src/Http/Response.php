@@ -35,6 +35,9 @@ class Response implements IResponse
 	/** @var bool Whether the cookie is hidden from client-side */
 	public $cookieHttpOnly = TRUE;
 
+	/** @var bool Whether the cookie is prevented from leaking from the site */
+	public $cookieSameSite = FALSE;
+
 	/** @var bool Whether warn on possible problem with data in output buffer */
 	public $warnOnBuffer = TRUE;
 
@@ -250,10 +253,11 @@ class Response implements IResponse
 	 * @param  string
 	 * @param  bool
 	 * @param  bool
+	 * @param  string|FALSE strict|lax
 	 * @return self
 	 * @throws Nette\InvalidStateException  if HTTP headers have been sent
 	 */
-	public function setCookie($name, $value, $time, $path = NULL, $domain = NULL, $secure = NULL, $httpOnly = NULL)
+	public function setCookie($name, $value, $time, $path = NULL, $domain = NULL, $secure = NULL, $httpOnly = NULL, $sameSite = NULL)
 	{
 		self::checkHeaders();
 		setcookie(
@@ -263,7 +267,8 @@ class Response implements IResponse
 			$path === NULL ? $this->cookiePath : (string) $path,
 			$domain === NULL ? $this->cookieDomain : (string) $domain,
 			$secure === NULL ? $this->cookieSecure : (bool) $secure,
-			$httpOnly === NULL ? $this->cookieHttpOnly : (bool) $httpOnly
+			$httpOnly === NULL ? $this->cookieHttpOnly : (bool) $httpOnly,
+			$sameSite === NULL ? $this->cookieSameSite : (string) $sameSite
 		);
 		Helpers::removeDuplicateCookies();
 		return $this;
@@ -276,12 +281,13 @@ class Response implements IResponse
 	 * @param  string
 	 * @param  string
 	 * @param  bool
+	 * @param  string|FALSE
 	 * @return void
 	 * @throws Nette\InvalidStateException  if HTTP headers have been sent
 	 */
-	public function deleteCookie($name, $path = NULL, $domain = NULL, $secure = NULL)
+	public function deleteCookie($name, $path = NULL, $domain = NULL, $secure = NULL, $sameSite = NULL)
 	{
-		$this->setCookie($name, FALSE, 0, $path, $domain, $secure);
+		$this->setCookie($name, FALSE, 0, $path, $domain, $secure, $sameSite);
 	}
 
 

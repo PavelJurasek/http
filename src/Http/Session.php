@@ -40,6 +40,7 @@ class Session
 		'cookie_domain' => '',    // cookie is available on current subdomain only
 		'cookie_secure' => FALSE, // cookie is available on HTTP & HTTPS
 		'cookie_httponly' => TRUE,// must be enabled to prevent Session Hijacking
+		'cookie_samesite' => FALSE,// should be enabled to prevent CSRF
 
 		// other
 		'gc_maxlifetime' => self::DEFAULT_FILE_LIFETIME,// 3 hours
@@ -192,7 +193,7 @@ class Session
 		self::$started = FALSE;
 		if (!$this->response->isSent()) {
 			$params = session_get_cookie_params();
-			$this->response->deleteCookie(session_name(), $params['path'], $params['domain'], $params['secure']);
+			$this->response->deleteCookie(session_name(), $params['path'], $params['domain'], $params['secure'], $params['samesite']);
 		}
 	}
 
